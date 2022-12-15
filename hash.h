@@ -20,7 +20,41 @@ struct MyStringHash {
     HASH_INDEX_T operator()(const std::string& k) const
     {
         // Add your code here
+        unsigned long long w[5]= {0,0,0,0,0};
+        int strleftlen= k.size();
+        int wIndex =4;
 
+        while(strleftlen>0)
+        {
+          if(strleftlen >6 && wIndex >=0)
+          {
+            int count =0;
+            for( int i =strleftlen -1; i>= strleftlen -6; i--)
+            {
+              w[wIndex]+= letterDigitToNumber(k[i])* pow(36, count);
+              count++;
+            }
+            strleftlen -= 6; 
+            wIndex--;
+          }
+          else if(strleftlen != 0 && wIndex >=0)
+          {
+            int count_ =0;
+            for( int i =strleftlen -1; i>= 0; i--)
+            {
+              w[wIndex]+= letterDigitToNumber(k[i])* pow(36, count_);
+              count_++;
+            }
+            strleftlen =0; 
+          }
+        }
+
+        HASH_INDEX_T hashes =0;
+        for(int i =0; i< 5; i++)
+        {
+          hashes += rValues[i] * w[i];
+        }
+        return hashes; 
 
     }
 
@@ -28,6 +62,16 @@ struct MyStringHash {
     HASH_INDEX_T letterDigitToNumber(char letter) const
     {
         // Add code here or delete this helper function if you do not want it
+       if(letter >= 48 && letter <= 57){
+            return letter - 22;
+        }
+
+        // if capital convert to lower
+        else if(letter >= 65 && letter <= 90){
+            letter = letter + 32;
+        }
+
+        return letter - 97;
 
     }
 
